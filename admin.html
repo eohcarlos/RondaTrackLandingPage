@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - RondaTrack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --background-dark: #020617;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            color: white;
+        }
+        .font-display { font-family: 'Outfit', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-text-fill-color: white;
+            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Login Section -->
+    <div id="login-section" class="flex flex-col items-center justify-center min-h-screen px-6">
+        <div class="glass-card p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-8">
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-3 bg-primary/10 rounded-2xl mb-2">
+                    <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+                </div>
+                <h1 class="text-3xl font-black font-display tracking-tight">Acesso Restrito</h1>
+                <p class="text-slate-400">Insira a senha de administrador</p>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <input type="password" id="admin-password" placeholder="••••••••" required 
+                    class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-slate-600 outline-none focus:border-primary transition-all text-center tracking-widest text-xl">
+                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                    Acessar Painel
+                </button>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden">Senha incorreta. Tente novamente.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Section -->
+    <div id="admin-dashboard" class="hidden min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="border-b border-white/5 bg-background-dark/50 backdrop-blur-md sticky top-0 z-20">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl font-black font-display tracking-tight text-white uppercase">Ronda<span class="text-primary">Track</span></span>
+                    <span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase tracking-widest">Admin</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="logout()" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-sm">logout</span>
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl mx-auto px-6 py-10 w-full">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                <div class="space-y-1">
+                    <h2 class="text-4xl font-extrabold font-display tracking-tight">Gestão de Leads</h2>
+                    <p class="text-slate-400">Acompanhe as solicitações de teste e contato em tempo real.</p>
+                </div>
+                <button onclick="fetchLeads()" class="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-sm font-bold transition-all">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    Atualizar Dados
+                </button>
+            </div>
+
+            <!-- Leads Table -->
+            <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-white/5 border-b border-white/5">
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Lead</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">WhatsApp</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Plano Interesse</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Mensagem</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body" class="divide-y divide-white/5">
+                            <!-- Data will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="loading" class="p-20 text-center space-y-4">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+                    <p class="text-slate-400">Carregando leads...</p>
+                </div>
+                <div id="no-leads" class="hidden p-20 text-center space-y-4">
+                    <span class="material-symbols-outlined text-slate-600 text-6xl">person_remove</span>
+                    <p class="text-slate-400">Nenhum lead encontrado ainda.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ucphigloltcnjaiyxesb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_8bc1jfybkILzgh9egEL9Mw_XoUoyi3Q';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const ADMIN_PASSWORD = '10203040';
+        const loginSection = document.getElementById('login-section');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const dashboardBody = document.getElementById('leads-table-body');
+        const loadingDiv = document.getElementById('loading');
+        const noLeadsDiv = document.getElementById('no-leads');
+
+        // Check Session
+        if (sessionStorage.getItem('admin_authenticated') === 'true') {
+            showDashboard();
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('admin-password').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                showDashboard();
+            } else {
+                loginError.classList.remove('hidden');
+                document.getElementById('admin-password').value = '';
+            }
+        });
+
+        function showDashboard() {
+            loginSection.classList.add('hidden');
+            adminDashboard.classList.remove('hidden');
+            fetchLeads();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin_authenticated');
+            window.location.reload();
+        }
+
+        async function fetchLeads() {
+            dashboardBody.innerHTML = '';
+            loadingDiv.classList.remove('hidden');
+            noLeadsDiv.classList.add('hidden');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('leads')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                loadingDiv.classList.add('hidden');
+
+                if (data.length === 0) {
+                    noLeadsDiv.classList.remove('hidden');
+                    return;
+                }
+
+                data.forEach(lead => {
+                    const date = new Date(lead.created_at).toLocaleString('pt-BR');
+                    const row = `
+                        <tr class="hover:bg-white/[0.02] transition-colors group">
+                            <td class="px-6 py-5">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-white">${lead.nome || 'N/A'}</span>
+                                    <span class="text-xs text-slate-400">${lead.email}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5">
+                                <a href="https://wa.me/55${lead.whatsapp?.replace(/\D/g, '')}" target="_blank" class="inline-flex items-center gap-2 text-primary hover:underline text-sm">
+                                    <span class="material-symbols-outlined text-sm">chat</span>
+                                    ${lead.whatsapp || 'N/A'}
+                                </a>
+                            </td>
+                            <td class="px-6 py-5">
+                                <span class="px-2 py-1 bg-white/10 rounded text-xs uppercase font-bold text-slate-300">
+                                    ${lead.plano_interesse || 'N/A'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-5">
+                                <p class="text-sm text-slate-400 max-w-xs truncate" title="${lead.message || ''}">
+                                    ${lead.message || '-'}
+                                </p>
+                            </td>
+                            <td class="px-6 py-5 text-sm text-slate-500">
+                                ${date}
+                            </td>
+                        </tr>
+                    `;
+                    dashboardBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error fetching leads:', error);
+                loadingDiv.innerHTML = `<p class="text-red-500">Erro ao carregar leads: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
