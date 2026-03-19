@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - RondaTrack</title>
+    <title>Dashboard Admin - RondaTrack</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,113 +13,256 @@
     <style>
         :root {
             --primary: #3b82f6;
+            --primary-hover: #2563eb;
             --background-dark: #020617;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-white: rgba(255, 255, 255, 0.05);
         }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-dark);
             color: white;
+            overflow-x: hidden;
         }
         .font-display { font-family: 'Outfit', sans-serif; }
+        
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
         }
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus {
-            -webkit-text-fill-color: white;
-            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
-            transition: background-color 5000s ease-in-out 0s;
+
+        .sidebar-item-active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            border-right: 2px solid var(--primary);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        input:-webkit-autofill {
+            -webkit-text-fill-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex transition-all duration-300">
 
-    <!-- Login Section -->
-    <div id="login-section" class="flex flex-col items-center justify-center min-h-screen px-6">
-        <div class="glass-card p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-8">
-            <div class="text-center space-y-2">
-                <div class="inline-flex p-3 bg-primary/10 rounded-2xl mb-2">
-                    <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+    <!-- Login Section (Full Screen Overlay) -->
+    <div id="login-section" class="fixed inset-0 z-50 bg-background-dark flex flex-col items-center justify-center px-6">
+        <div class="glass-card p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl space-y-10 animate-fade-in">
+            <div class="text-center space-y-4">
+                <div class="inline-flex p-4 bg-primary/10 rounded-3xl mb-2">
+                    <span class="material-symbols-outlined text-primary text-4xl">lock</span>
                 </div>
-                <h1 class="text-3xl font-black font-display tracking-tight">Acesso Restrito</h1>
-                <p class="text-slate-400">Insira a senha de administrador</p>
+                <h1 class="text-4xl font-black font-display tracking-tight">Painel de Controle</h1>
+                <p class="text-slate-400">Entre com sua senha de administrador</p>
             </div>
             
-            <form id="login-form" class="space-y-4">
+            <form id="login-form" class="space-y-6">
                 <input type="password" id="admin-password" placeholder="••••••••" required 
-                    class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-slate-600 outline-none focus:border-primary transition-all text-center tracking-widest text-xl">
-                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                    Acessar Painel
+                    class="w-full bg-slate-900 border border-white/10 rounded-2xl px-4 py-5 text-white placeholder-slate-600 outline-none focus:border-primary transition-all text-center tracking-widest text-2xl">
+                <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3 text-lg hover:scale-[1.02] active:scale-[0.98]">
+                    Acessar Dashboard
+                    <span class="material-symbols-outlined">login</span>
                 </button>
-                <p id="login-error" class="text-red-500 text-sm text-center hidden">Senha incorreta. Tente novamente.</p>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden font-medium">Senha inválida. Tente novamente.</p>
             </form>
         </div>
     </div>
 
-    <!-- Admin Dashboard Section -->
-    <div id="admin-dashboard" class="hidden min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="border-b border-white/5 bg-background-dark/50 backdrop-blur-md sticky top-0 z-20">
-            <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl font-black font-display tracking-tight text-white uppercase">Ronda<span class="text-primary">Track</span></span>
-                    <span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold rounded uppercase tracking-widest">Admin</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button onclick="logout()" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
-                        <span class="material-symbols-outlined text-sm">logout</span>
-                        Sair
-                    </button>
-                </div>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="hidden fixed left-0 top-0 h-full w-20 lg:w-64 border-r border-white/5 bg-background-dark/50 backdrop-blur-xl z-30 transition-all duration-300">
+        <div class="flex flex-col h-full py-8">
+            <!-- Logo -->
+            <div class="px-6 mb-12 flex items-center gap-3 overflow-hidden">
+                <div class="min-w-[32px] h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-white">R</div>
+                <span class="text-xl font-bold font-display tracking-tight text-white lg:block hidden">Ronda<span class="text-primary">Track</span></span>
             </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="flex-grow max-w-7xl mx-auto px-6 py-10 w-full">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                <div class="space-y-1">
-                    <h2 class="text-4xl font-extrabold font-display tracking-tight">Gestão de Leads</h2>
-                    <p class="text-slate-400">Acompanhe as solicitações de teste e contato em tempo real.</p>
-                </div>
-                <button onclick="fetchLeads()" class="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-sm font-bold transition-all">
-                    <span class="material-symbols-outlined text-sm">refresh</span>
-                    Atualizar Dados
+            <!-- Nav -->
+            <nav class="flex-grow flex flex-col gap-2">
+                <a href="#" class="sidebar-item-active flex items-center gap-4 px-6 py-4 group transition-all">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="font-semibold lg:block hidden">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="font-semibold lg:block hidden">Leads</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    <span class="font-semibold lg:block hidden">Relatórios</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-4 text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-semibold lg:block hidden">Configurações</span>
+                </a>
+            </nav>
+
+            <!-- Bottom Actions -->
+            <div class="px-6 mt-auto">
+                <button onclick="logout()" class="flex items-center gap-4 py-4 text-slate-500 hover:text-red-400 transition-colors w-full">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-bold lg:block hidden uppercase text-xs tracking-widest">Sair do Painel</span>
                 </button>
             </div>
+        </div>
+    </aside>
 
-            <!-- Leads Table -->
-            <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-white/5 border-b border-white/5">
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Lead</th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">WhatsApp</th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Plano Interesse</th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Mensagem</th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400">Data</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leads-table-body" class="divide-y divide-white/5">
-                            <!-- Data will be injected here -->
-                        </tbody>
-                    </table>
+    <!-- Main Content Area -->
+    <main id="main-content" class="hidden flex-grow min-h-screen ml-20 lg:ml-64 p-6 lg:p-10 space-y-10 max-w-[1600px] mx-auto overflow-hidden">
+        
+        <!-- Top Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-1">
+                <h2 class="text-3xl font-black font-display tracking-tight text-white">Dashboard de Leads</h2>
+                <p class="text-slate-400 text-sm">Bem-vindo de volta, Administrador.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="fetchLeads()" class="inline-flex items-center gap-2 px-5 py-2.5 glass-card hover:bg-white/10 rounded-xl text-sm font-bold transition-all">
+                    <span class="material-symbols-outlined text-sm">refresh</span>
+                    Atualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Leads -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="p-2 bg-blue-500/10 rounded-xl text-blue-500">
+                        <span class="material-symbols-outlined">group</span>
+                    </div>
+                    <span class="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-1 rounded-full">+12%</span>
                 </div>
-                <div id="loading" class="p-20 text-center space-y-4">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
-                    <p class="text-slate-400">Carregando leads...</p>
-                </div>
-                <div id="no-leads" class="hidden p-20 text-center space-y-4">
-                    <span class="material-symbols-outlined text-slate-600 text-6xl">person_remove</span>
-                    <p class="text-slate-400">Nenhum lead encontrado ainda.</p>
+                <div>
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Total de Leads</h4>
+                    <p id="stat-total-leads" class="text-3xl font-black font-display tracking-tight">0</p>
                 </div>
             </div>
-        </main>
+
+            <!-- Leads Today -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="p-2 bg-purple-500/10 rounded-xl text-purple-500">
+                        <span class="material-symbols-outlined">speed</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Hoje</h4>
+                    <p id="stat-today-leads" class="text-3xl font-black font-display tracking-tight">0</p>
+                </div>
+            </div>
+
+            <!-- Most Interested Plan -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500">
+                        <span class="material-symbols-outlined">star</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Plano Favorito</h4>
+                    <p id="stat-favorite-plan" class="text-3xl font-black font-display tracking-tight">-</p>
+                </div>
+            </div>
+
+            <!-- Conversion Rate (Simulated) -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="p-2 bg-green-500/10 rounded-xl text-green-500">
+                        <span class="material-symbols-outlined">trending_up</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Taxa Conversão</h4>
+                    <p class="text-3xl font-black font-display tracking-tight">8.4%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Controls -->
+        <div class="glass-card p-6 lg:p-8 rounded-[2rem] space-y-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] pointer-events-none"></div>
+            
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-6">
+                <div class="relative flex-grow max-w-md">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl">search</span>
+                    <input type="text" id="lead-search" oninput="applyFilters()" placeholder="Buscar por nome ou email..." 
+                        class="w-full bg-slate-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white placeholder-slate-500 outline-none focus:border-primary transition-all">
+                </div>
+                <div class="flex items-center gap-4">
+                    <select id="plan-filter" onchange="applyFilters()" class="bg-slate-900 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-primary text-sm font-medium">
+                        <option value="todos">Todos os Planos</option>
+                        <option value="Bronze">Bronze</option>
+                        <option value="Prata">Prata</option>
+                        <option value="Ouro">Ouro</option>
+                        <option value="Final CTA">Botão Final</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Main Table Wrapper -->
+            <div class="overflow-x-auto -mx-6 lg:-mx-8">
+                <table class="w-full text-left border-separate border-spacing-y-2 px-6 lg:px-8">
+                    <thead>
+                        <tr class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">
+                            <th class="pl-4 pb-2">Informações do Lead</th>
+                            <th class="pb-2">WhatsApp</th>
+                            <th class="pb-2">Interesse</th>
+                            <th class="pb-2">Mensagem</th>
+                            <th class="pb-2">Data</th>
+                            <th class="pr-4 pb-2 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-table-body">
+                        <!-- Data will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty / Loading States -->
+            <div id="loading" class="p-20 text-center space-y-4">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent"></div>
+                <p class="text-slate-400 font-medium">Acessando Supabase...</p>
+            </div>
+            
+            <div id="no-leads" class="hidden p-20 text-center space-y-4">
+                <div class="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-slate-500 text-4xl">inbox</span>
+                </div>
+                <h3 class="text-xl font-bold text-white">Nenhum resultado</h3>
+                <p class="text-slate-400">Nenhum registro encontrado para estes filtros.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Confirmação Exclusão -->
+    <div id="delete-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4">
+        <div class="absolute inset-0 bg-background-dark/80 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+        <div class="glass-card max-w-sm w-full p-8 rounded-3xl relative animate-fade-in space-y-6">
+            <h3 class="text-xl font-bold text-white text-center">Excluir Lead?</h3>
+            <p class="text-slate-400 text-center text-sm leading-relaxed">Esta ação não pode ser desfeita. O lead será permanentemente removido da base de dados.</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-white/5 hover:bg-white/10 rounded-xl font-bold transition-all">Cancelar</button>
+                <button id="confirm-delete-btn" class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-500/10">Sim, Excluir</button>
+            </div>
+        </div>
     </div>
 
+    <!-- Scripts -->
     <script>
         const SUPABASE_URL = 'https://ucphigloltcnjaiyxesb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_8bc1jfybkILzgh9egEL9Mw_XoUoyi3Q';
@@ -127,14 +270,18 @@
 
         const ADMIN_PASSWORD = '10203040';
         const loginSection = document.getElementById('login-section');
-        const adminDashboard = document.getElementById('admin-dashboard');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
         const dashboardBody = document.getElementById('leads-table-body');
         const loadingDiv = document.getElementById('loading');
         const noLeadsDiv = document.getElementById('no-leads');
 
-        // Check Session
+        let allLeads = [];
+        let leadToDelete = null;
+
+        // Check Auth on Start
         if (sessionStorage.getItem('admin_authenticated') === 'true') {
             showDashboard();
         }
@@ -142,7 +289,6 @@
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const password = document.getElementById('admin-password').value;
-            
             if (password === ADMIN_PASSWORD) {
                 sessionStorage.setItem('admin_authenticated', 'true');
                 showDashboard();
@@ -154,7 +300,8 @@
 
         function showDashboard() {
             loginSection.classList.add('hidden');
-            adminDashboard.classList.remove('hidden');
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
             fetchLeads();
         }
 
@@ -175,52 +322,162 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-
+                allLeads = data;
+                updateStats();
+                renderLeads(allLeads);
                 loadingDiv.classList.add('hidden');
-
-                if (data.length === 0) {
-                    noLeadsDiv.classList.remove('hidden');
-                    return;
-                }
-
-                data.forEach(lead => {
-                    const date = new Date(lead.created_at).toLocaleString('pt-BR');
-                    const row = `
-                        <tr class="hover:bg-white/[0.02] transition-colors group">
-                            <td class="px-6 py-5">
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-white">${lead.nome || 'N/A'}</span>
-                                    <span class="text-xs text-slate-400">${lead.email}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <a href="https://wa.me/55${lead.whatsapp?.replace(/\D/g, '')}" target="_blank" class="inline-flex items-center gap-2 text-primary hover:underline text-sm">
-                                    <span class="material-symbols-outlined text-sm">chat</span>
-                                    ${lead.whatsapp || 'N/A'}
-                                </a>
-                            </td>
-                            <td class="px-6 py-5">
-                                <span class="px-2 py-1 bg-white/10 rounded text-xs uppercase font-bold text-slate-300">
-                                    ${lead.plano_interesse || 'N/A'}
-                                </span>
-                            </td>
-                            <td class="px-6 py-5">
-                                <p class="text-sm text-slate-400 max-w-xs truncate" title="${lead.message || ''}">
-                                    ${lead.message || '-'}
-                                </p>
-                            </td>
-                            <td class="px-6 py-5 text-sm text-slate-500">
-                                ${date}
-                            </td>
-                        </tr>
-                    `;
-                    dashboardBody.innerHTML += row;
-                });
             } catch (error) {
-                console.error('Error fetching leads:', error);
-                loadingDiv.innerHTML = `<p class="text-red-500">Erro ao carregar leads: ${error.message}</p>`;
+                console.error('Error:', error);
+                loadingDiv.innerHTML = `<p class="text-red-500">Erro fatal: ${error.message}</p>`;
             }
         }
+
+        function updateStats() {
+            document.getElementById('stat-total-leads').innerText = allLeads.length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayLeads = allLeads.filter(l => l.created_at.startsWith(today)).length;
+            document.getElementById('stat-today-leads').innerText = todayLeads;
+
+            const planCounts = {};
+            allLeads.forEach(l => {
+                if(l.plano_interesse && l.plano_interesse !== 'Final CTA') {
+                    planCounts[l.plano_interesse] = (planCounts[l.plano_interesse] || 0) + 1;
+                }
+            });
+            
+            let favorite = '-';
+            let maxCount = 0;
+            for (const plan in planCounts) {
+                if (planCounts[plan] > maxCount) {
+                    maxCount = planCounts[plan];
+                    favorite = plan;
+                }
+            }
+            document.getElementById('stat-favorite-plan').innerText = favorite;
+        }
+
+        function renderLeads(leads) {
+            dashboardBody.innerHTML = '';
+            
+            if (leads.length === 0) {
+                noLeadsDiv.classList.remove('hidden');
+                return;
+            }
+            noLeadsDiv.classList.add('hidden');
+
+            leads.forEach(lead => {
+                const date = new Date(lead.created_at).toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit'
+                });
+                
+                const planClass = {
+                    'Bronze': 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+                    'Prata': 'bg-slate-400/10 text-slate-300 border-slate-400/20',
+                    'Ouro': 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                    'Final CTA': 'bg-primary/10 text-primary border-primary/20'
+                }[lead.plano_interesse] || 'bg-white/10 text-slate-400 border-white/10';
+
+                const row = `
+                    <tr class="group animate-fade-in">
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all rounded-l-2xl px-4 py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                    ${lead.nome?.charAt(0).toUpperCase() || '?'}
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-white text-sm">${lead.nome || 'NOME INDISP.'}</span>
+                                    <span class="text-[11px] text-slate-500">${lead.email}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5">
+                            <a href="https://wa.me/55${lead.whatsapp?.replace(/\D/g, '')}" target="_blank" 
+                               class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors text-xs font-medium">
+                                <span class="material-symbols-outlined text-sm">chat</span>
+                                ${lead.whatsapp || '-'}
+                            </a>
+                        </td>
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5">
+                            <span class="px-2.5 py-1 border rounded-lg text-[10px] font-black uppercase tracking-tighter ${planClass}">
+                                ${lead.plano_interesse || 'GERAL'}
+                            </span>
+                        </td>
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5">
+                            <p class="text-xs text-slate-400 max-w-[150px] truncate" title="${lead.message || ''}">
+                                ${lead.message || '-'}
+                            </p>
+                        </td>
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5 text-[11px] text-slate-500 font-medium">
+                            ${date}
+                        </td>
+                        <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all rounded-r-2xl px-4 py-5 text-right">
+                             <button onclick="openDeleteModal('${lead.id}')" class="p-2 text-slate-600 hover:text-red-500 transition-colors">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                dashboardBody.innerHTML += row;
+            });
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('lead-search').value.toLowerCase();
+            const plan = document.getElementById('plan-filter').value;
+
+            let filtered = allLeads;
+
+            if (plan !== 'todos') {
+                filtered = filtered.filter(l => l.plano_interesse === plan);
+            }
+
+            if (query) {
+                filtered = filtered.filter(l => 
+                    l.nome?.toLowerCase().includes(query) || 
+                    l.email?.toLowerCase().includes(query)
+                );
+            }
+
+            renderLeads(filtered);
+        }
+
+        function openDeleteModal(id) {
+            leadToDelete = id;
+            document.getElementById('delete-modal').classList.remove('hidden');
+            document.getElementById('delete-modal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            leadToDelete = null;
+            document.getElementById('delete-modal').classList.add('hidden');
+            document.getElementById('delete-modal').classList.remove('flex');
+        }
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+            if (!leadToDelete) return;
+            
+            const originalBtnText = document.getElementById('confirm-delete-btn').innerText;
+            document.getElementById('confirm-delete-btn').disabled = true;
+            document.getElementById('confirm-delete-btn').innerText = 'Excluindo...';
+
+            try {
+                const { error } = await supabaseClient
+                    .from('leads')
+                    .delete()
+                    .eq('id', leadToDelete);
+
+                if (error) throw error;
+                
+                closeDeleteModal();
+                fetchLeads(); // Refresh
+            } catch (error) {
+                alert('Erro ao excluir: ' + error.message);
+            } finally {
+                document.getElementById('confirm-delete-btn').disabled = false;
+                document.getElementById('confirm-delete-btn').innerText = originalBtnText;
+            }
+        });
     </script>
 </body>
 </html>
