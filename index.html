@@ -80,7 +80,7 @@
 <div class="hidden md:flex items-center gap-10">
 <a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Início</a>
 <a class="text-sm font-medium hover:text-primary transition-colors" href="beneficios.html">Benefícios</a>
-<a class="text-sm font-medium hover:text-primary transition-colors" href="planos.html">Planos</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#planos">Planos</a>
 <a class="text-sm font-medium hover:text-primary transition-colors" href="contato.html">Contato</a>
 </div>
 <div class="flex items-center gap-4">
@@ -97,7 +97,7 @@
 <div id="mobile-menu" class="hidden md:hidden bg-background-dark/95 backdrop-blur-3xl border-b border-white/10 w-full absolute top-20 left-0 flex flex-col items-center py-8 gap-6 shadow-2xl transition-all">
 <a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="index.html">Início</a>
 <a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="beneficios.html">Benefícios</a>
-<a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="planos.html">Planos</a>
+<a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="#planos">Planos</a>
 <a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="contato.html">Contato</a>
         <button onclick="openTrialModal('Geral')" class="mt-4 px-8 py-4 bg-primary hover:bg-primary/90 text-white text-base font-bold rounded-xl transition-all neon-glow flex items-center justify-center w-[80%] max-w-[300px] border-none focus:outline-none">
             Teste Grátis
@@ -624,11 +624,27 @@
     const modalPlanInput = document.getElementById('modal-plan-input');
 
     window.openTrialModal = function(plan) {
-        if (trialModal && modalPlanInput) {
-            modalPlanInput.value = plan;
-            trialModal.classList.remove('hidden');
-            trialModal.classList.add('flex');
-            document.body.style.overflow = 'hidden'; 
+        // Se for um plano específico, abre o modal
+        if (['Bronze', 'Prata', 'Ouro'].includes(plan)) {
+            if (trialModal && modalPlanInput) {
+                modalPlanInput.value = plan;
+                trialModal.classList.remove('hidden');
+                trialModal.classList.add('flex');
+                document.body.style.overflow = 'hidden'; 
+            }
+            return;
+        }
+        
+        // Se for um clique genérico (Hero, Nav, etc), rola até os planos
+        const planosSection = document.getElementById('planos');
+        if (planosSection) {
+            planosSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Fecha o menu mobile se estiver aberto
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
         }
     };
 
