@@ -665,7 +665,7 @@
             const data = {
                 nome: formData.get('nome'),
                 email: formData.get('email'),
-                phone: formData.get('phone'),
+                whatsapp: formData.get('phone'),
                 plano_interesse: formData.get('plano_interesse'),
                 trial_expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
             };
@@ -716,7 +716,7 @@
             const data = {
                 nome: formData.get('full_name'),
                 email: formData.get('email'),
-                phone: formData.get('phone'),
+                whatsapp: formData.get('phone'),
                 message: formData.get('message'),
                 plano_interesse: 'Final CTA'
             };
