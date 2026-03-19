@@ -644,7 +644,7 @@
                 <span class="material-symbols-outlined text-primary text-3xl">rocket_launch</span>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Inicie seu Teste Grátis</h3>
-            <p class="text-slate-400">7 dias de acesso total ao RondaTrack. Sem compromisso.</p>
+            <p class="text-slate-400">7 dias de acesso total ao <span id="modal-plan-name" class="text-primary font-bold">RondaTrack</span>. Sem compromisso.</p>
         </div>
 
         <form id="trial-form" class="space-y-4">
@@ -707,12 +707,14 @@
     const trialModal = document.getElementById('trial-modal');
     const modalPlanInput = document.getElementById('modal-plan-input');
 
+    const modalPlanName = document.getElementById('modal-plan-name');
     window.openTrialModal = function(plan) {
         // Se for um plano específico, abre o modal
         const validPlans = ['RondaTrack', 'RondaTrack 2', 'RondaTrack 3 Pro'];
         if (validPlans.includes(plan)) {
             if (trialModal && modalPlanInput) {
                 modalPlanInput.value = plan;
+                if(modalPlanName) modalPlanName.innerText = plan;
                 trialModal.classList.remove('hidden');
                 trialModal.classList.add('flex');
                 document.body.style.overflow = 'hidden'; 
