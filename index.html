@@ -3195,9 +3195,12 @@
                 
                 let errorMsg = 'Erro ao ativar. Tente novamente.';
                 if (error && error.message) {
-                    errorMsg = 'Erro: ' + error.message;
-                }
-                if (error && error.details) {
+                    if (error.message.includes('leads_email_key') || error.message.includes('duplicate key')) {
+                        errorMsg = 'Aviso: Este e-mail já solicitou um teste. Nossa equipe entrará em contato!';
+                    } else {
+                        errorMsg = 'Erro: ' + error.message;
+                    }
+                } else if (error && error.details) {
                     errorMsg += ' | ' + error.details;
                 }
 
