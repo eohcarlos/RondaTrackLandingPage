@@ -6,7 +6,7 @@
 
 
 
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
 
 
@@ -19,6 +19,10 @@
 
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+
+
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 
 
@@ -176,10 +180,8 @@
 
         html { scroll-behavior: smooth; }
         body {
-
-
-
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
 
 
 
@@ -268,6 +270,37 @@
 
 
         }
+        /* Quiz Specific Styles */
+        .quiz-step {
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #2463eb;
+            width: 50%;
+            transition: width 0.3s ease;
+        }
+
 
 
 
@@ -287,7 +320,7 @@
 
 
 
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased selection:bg-primary/30" data-mode="connect">
+<body style="overflow-x:hidden;" class="w-full overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased selection:bg-primary/30" data-mode="connect">
 
 
 
@@ -303,7 +336,7 @@
 
 
 
-<a href="index.html" class="flex items-center cursor-pointer h-full">
+<a href="#inicio" class="flex items-center cursor-pointer h-full">
 
 
 
@@ -319,7 +352,7 @@
 
 
 
-<a class="text-sm font-medium hover:text-primary transition-colors" href="index.html">Início</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#inicio">Início</a>
 
 
 
@@ -328,10 +361,6 @@
 
 
 <a class="text-sm font-medium hover:text-primary transition-colors" href="#planos">Planos</a>
-
-
-
-<a class="text-sm font-medium hover:text-primary transition-colors" href="contato.html">Contato</a>
 
 
 
@@ -387,7 +416,7 @@
 
 
 
-<a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="index.html">Início</a>
+<a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="#inicio">Início</a>
 
 
 
@@ -396,10 +425,6 @@
 
 
 <a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="#planos">Planos</a>
-
-
-
-<a class="text-lg font-medium text-slate-200 hover:text-primary transition-colors mobile-link" href="contato.html">Contato</a>
 
 
 
@@ -439,7 +464,7 @@
 
 
 
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-wider uppercase mb-8">
+<div data-aos="fade-down" data-aos-duration="1000" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-wider uppercase mb-8">
 
 
 
@@ -467,7 +492,7 @@
 
 
 
-<h1 class="text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight text-white mb-6">
+<h1 data-aos="fade-up" data-aos-duration="1000" class="text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight text-white mb-6">
 
 
 
@@ -479,7 +504,7 @@
 
 
 
-<p class="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
+<p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200" class="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
 
 
 
@@ -491,7 +516,7 @@
 
 
 
-<div class="flex flex-col sm:flex-row gap-4 justify-center mb-20 w-full">
+<div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400" class="flex flex-col sm:flex-row gap-4 justify-center mb-20 w-full">
 
 
 
@@ -527,7 +552,7 @@
 
 
 
-<div class="relative w-full max-w-lg mx-auto perspective-1000">
+<div data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="600" class="relative w-full max-w-lg mx-auto perspective-1000">
 
 
 
@@ -543,7 +568,7 @@
 
 
 
-<div class="w-64 h-64 md:w-80 md:h-80 rounded-[2rem] bg-gradient-to-br from-primary via-primary/50 to-transparent p-[2px] neon-border opacity-90 relative overflow-hidden glass-card">
+<div data-aos="fade-up" data-aos-delay="0" class="w-64 h-64 md:w-80 md:h-80 rounded-[2rem] bg-gradient-to-br from-primary via-primary/50 to-transparent p-[2px] neon-border opacity-90 relative overflow-hidden glass-card">
 
 
 
@@ -623,7 +648,7 @@
 
 
 
-<h2 class="text-3xl lg:text-4xl font-bold text-white tracking-tight">Benefícios do RondaTrack</h2>
+<h2 data-aos="fade-up"  class="text-3xl lg:text-4xl font-bold text-white tracking-tight">Benefícios do RondaTrack</h2>
 
 
 
@@ -643,7 +668,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="0" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -675,7 +700,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="100" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -707,7 +732,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="200" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -739,7 +764,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="300" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -771,7 +796,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="400" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -803,7 +828,7 @@
 
 
 
-<div class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
+<div data-aos="fade-up" data-aos-delay="500" class="glass-card p-8 rounded-2xl group hover:border-primary/50 transition-all">
 
 
 
@@ -863,7 +888,7 @@
 
 
 
-<h2 class="text-3xl font-bold text-white leading-tight">Funcionalidades pensadas na sua operação</h2>
+<h2 data-aos="fade-up"  class="text-3xl font-bold text-white leading-tight">Funcionalidades pensadas na sua operação</h2>
 
 
 
@@ -1203,7 +1228,7 @@
 
 
 
-<h2 class="text-4xl font-black text-white leading-tight">Uma plataforma criada para profissionais de segurança...</h2>
+<h2 data-aos="fade-up"  class="text-4xl font-black text-white leading-tight">Uma plataforma criada para profissionais de segurança...</h2>
 
 
 
@@ -1327,7 +1352,7 @@
 
 
 
-                <h2 class="text-4xl font-black text-white">Planos que cabem no seu negócio</h2>
+                <h2 data-aos="fade-up"  class="text-4xl font-black text-white">Planos que cabem no seu negócio</h2>
 
 
 
@@ -1355,7 +1380,7 @@
 
 
 
-                <div class="glass-card p-8 rounded-3xl flex flex-col border border-white/10 group hover:border-primary/30 transition-all duration-500">
+                <div data-aos="fade-up" data-aos-delay="0" class="glass-card p-8 rounded-3xl flex flex-col border border-white/10 group hover:border-primary/30 transition-all duration-500">
 
 
 
@@ -1503,7 +1528,7 @@
 
 
 
-                <div class="glass-card p-8 rounded-3xl flex flex-col border border-white/10 transition-all duration-500 hover:border-primary/30 relative">
+                <div data-aos="fade-up" data-aos-delay="0" class="glass-card p-8 rounded-3xl flex flex-col border border-white/10 transition-all duration-500 hover:border-primary/30 relative">
 
 
 
@@ -1651,7 +1676,7 @@
 
 
 
-                <div class="glass-card p-8 rounded-3xl flex flex-col border border-primary/40 scale-105 neon-border relative z-10 bg-primary/5">
+                <div data-aos="fade-up" data-aos-delay="0" class="glass-card p-8 rounded-3xl flex flex-col border border-primary/40 scale-105 neon-border relative z-10 bg-primary/5">
 
 
 
@@ -1807,7 +1832,7 @@
 
 
 
-            <div class="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 animate-fade-in">
+            <div data-aos="fade-up" data-aos-delay="0" class="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 animate-fade-in">
 
 
 
@@ -2075,7 +2100,7 @@
 
 
 
-<h2 class="text-3xl font-bold text-white">Sistema criado para profissionais de segurança</h2>
+<h2 data-aos="fade-up"  class="text-3xl font-bold text-white">Sistema criado para profissionais de segurança</h2>
 
 
 
@@ -2143,7 +2168,7 @@
 
 
 
-<div class="glass-card p-6 rounded-2xl space-y-4">
+<div data-aos="fade-up" data-aos-delay="0" class="glass-card p-6 rounded-2xl space-y-4">
 
 
 
@@ -2183,7 +2208,7 @@
 
 
 
-<div class="glass-card p-6 rounded-2xl space-y-4">
+<div data-aos="fade-up" data-aos-delay="100" class="glass-card p-6 rounded-2xl space-y-4">
 
 
 
@@ -2223,7 +2248,7 @@
 
 
 
-<div class="glass-card p-6 rounded-2xl space-y-4">
+<div data-aos="fade-up" data-aos-delay="200" class="glass-card p-6 rounded-2xl space-y-4">
 
 
 
@@ -2291,7 +2316,7 @@
 
 
 
-<h2 class="text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">Modernize a gestão da sua segurança hoje.</h2>
+<h2 data-aos="fade-up"  class="text-4xl lg:text-6xl font-black text-white leading-tight tracking-tight">Modernize a gestão da sua segurança hoje.</h2>
 
 
 
@@ -2407,7 +2432,7 @@
 
 
 
-<a href="index.html" class="flex items-center">
+<a href="#inicio" class="flex items-center">
 
 
 
@@ -2443,7 +2468,7 @@
 
 
 
-<li class=""><a class="text-sm text-slate-400 hover:text-white transition-colors" href="index.html">Início</a></li>
+<li class=""><a class="text-sm text-slate-400 hover:text-white transition-colors" href="#inicio">Início</a></li>
 
 
 
@@ -2455,7 +2480,7 @@
 
 
 
-<li class=""><a class="text-sm text-slate-400 hover:text-white transition-colors" href="contato.html">Contato</a></li>
+<li class=""><a class="text-sm text-slate-400 hover:text-white transition-colors" href="#contato">Contato</a></li>
 
 
 
@@ -2567,7 +2592,7 @@
 
 
 
-    <div class="glass-card w-full max-w-lg rounded-3xl p-8 relative shadow-2xl border border-white/10 animate-[fadeIn_0.3s_ease-out]">
+    <div data-aos="fade-up" data-aos-delay="0" class="glass-card w-full max-w-lg rounded-3xl p-8 relative shadow-2xl border border-white/10 animate-[fadeIn_0.3s_ease-out]">
 
 
 
@@ -2619,111 +2644,116 @@
 
 
 
+        
+        <div class="progress-bar-container">
+            <div id="quiz-progress" class="progress-bar-fill" style="width: 33.33%;"></div>
+        </div>
+
         <form id="trial-form" class="space-y-4">
-
-
-
             <input type="hidden" name="plano_interesse" id="modal-plan-input" value="Geral">
-
-
-
             
+            <!-- Step 1: Contact -->
+            <div id="step-1" class="quiz-step active">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Nome Completo</label>
+                        <input type="text" name="nome" id="quiz-nome" required placeholder="Como podemos te chamar?" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
+                    </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">E-mail Profissional</label>
+                        <input type="email" name="email" id="quiz-email" required placeholder="ex: seu@email.com" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
+                    </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">WhatsApp de Contato</label>
+                        <input type="tel" name="phone" id="quiz-phone" required placeholder="(00) 00000-0000" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
+                    </div>
 
-            <div>
-
-
-
-                <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Nome Completo</label>
-
-
-
-                <input type="text" name="nome" required placeholder="Como podemos te chamar?" 
-
-
-
-                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
-
-
-
+                    <button type="button" onclick="nextQuizStep()" class="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 mt-4">
+                        <span>Próximo Passo</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- Step 2: Company Info -->
+            <div id="step-2" class="quiz-step">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Nome da Empresa</label>
+                        <input type="text" name="nome_empresa" placeholder="Sua empresa" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
+                    </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Quanto tempo tem a empresa?</label>
+                        <select name="tempo_empresa" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                            <option value="" disabled selected class="bg-card-dark">Selecione uma opção</option>
+                            <option value="Menos de 1 ano" class="bg-card-dark">Menos de 1 ano</option>
+                            <option value="1-5 anos" class="bg-card-dark">1 a 5 anos</option>
+                            <option value="5-10 anos" class="bg-card-dark">5 a 10 anos</option>
+                            <option value="10+ anos" class="bg-card-dark">Mais de 10 anos</option>
+                        </select>
+                    </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Quantos funcionários tem na empresa?</label>
+                        <select name="qtd_funcionarios" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all">
+                            <option value="" disabled selected class="bg-card-dark">Selecione uma opção</option>
+                            <option value="1-10" class="bg-card-dark">1 a 10 funcionários</option>
+                            <option value="11-50" class="bg-card-dark">11 a 50 funcionários</option>
+                            <option value="51-100" class="bg-card-dark">51 a 100 funcionários</option>
+                            <option value="101-500" class="bg-card-dark">101 a 500 funcionários</option>
+                            <option value="500+" class="bg-card-dark">Mais de 500 funcionários</option>
+                        </select>
+                    </div>
 
-
-
-
-            <div>
-
-
-
-                <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">E-mail Profissional</label>
-
-
-
-                <input type="email" name="email" required placeholder="ex: seu@email.com" 
-
-
-
-                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
-
-
-
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <button type="button" onclick="prevQuizStep()" class="w-full py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-all">
+                            Voltar
+                        </button>
+                        <button type="button" onclick="nextQuizStep()" class="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                            <span>Próximo</span>
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
+            <!-- Step 3: Specifics & Message -->
+            <div id="step-3" class="quiz-step">
+                <div class="space-y-4">
+                    <div id="extra-question-container" class="hidden">
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Quantos contratos/postos você gerencia hoje?</label>
+                        <input type="text" name="qtd_postos" placeholder="Ex: 5 postos" 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
+                    </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">Deixe uma mensagem (opcional)</label>
+                        <textarea name="mensagem" rows="3" placeholder="Em que podemos te ajudar?" 
+                                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500 resize-none"></textarea>
+                    </div>
 
-
-
-
-
-            <div>
-
-
-
-                <label class="block text-sm font-medium text-slate-300 mb-1.5 ml-1">WhatsApp de Contato</label>
-
-
-
-                <input type="tel" name="phone" placeholder="(00) 00000-0000" 
-
-
-
-                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-500">
-
-
-
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <button type="button" onclick="prevQuizStep()" class="w-full py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-all">
+                            Voltar
+                        </button>
+                        <button type="submit" id="trial-submit-btn" class="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all neon-glow flex items-center justify-center gap-2">
+                            <span>Ativar Meu Teste</span>
+                            <span class="material-symbols-outlined text-lg">check</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-
-
-
-
-
-
-
-            <button type="submit" id="trial-submit-btn" class="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all neon-glow flex items-center justify-center gap-2 mt-2">
-
-
-
-                <span>Ativar Meu Teste Agora</span>
-
-
-
-                <span class="material-symbols-outlined text-lg">arrow_forward</span>
-
-
-
-            </button>
-
-
 
             <p id="trial-feedback" class="text-sm text-center mt-3 hidden"></p>
-
-
-
         </form>
+
 
 
 
@@ -2855,114 +2885,32 @@
 
 
 
-
-
-
-
     const modalPlanName = document.getElementById('modal-plan-name');
 
 
 
     window.openTrialModal = function(plan) {
-
-
-
-        // Se for um plano específico, abre o modal
-
-
-
-        const validPlans = ['RondaTrack', 'RondaTrack 2', 'RondaTrack 3 Pro'];
-
-
-
-        if (validPlans.includes(plan)) {
-
-
-
-            if (trialModal && modalPlanInput) {
-
-
-
-                modalPlanInput.value = plan;
-
-
-
-                if(modalPlanName) modalPlanName.innerText = plan;
-
-
-
-                trialModal.classList.remove('hidden');
-
-
-
-                trialModal.classList.add('flex');
-
-
-
-                document.body.style.overflow = 'hidden'; 
-
-
-
-            }
-
-
-
-            return;
-
-
-
-        }
-
-
-
-        
-
-
-
-        // Se for um clique genérico (Hero, Nav, etc), rola até os planos
-
-
-
-        const planosSection = document.getElementById('planos');
-
-
-
-        if (planosSection) {
-
-
-
-            planosSection.scrollIntoView({ behavior: 'smooth' });
-
-
-
+        if (trialModal && modalPlanInput) {
+            const validPlans = ['RondaTrack', 'RondaTrack 2', 'RondaTrack 3 Pro'];
+            const selectedPlan = validPlans.includes(plan) ? plan : 'RondaTrack';
             
+            modalPlanInput.value = selectedPlan;
+            currentQuizStep = 1;
+            
+            if(typeof updateQuizUI === "function") updateQuizUI();
 
+            if(modalPlanName) modalPlanName.innerText = selectedPlan;
 
-
-            // Fecha o menu mobile se estiver aberto
-
-
-
-            const mobileMenu = document.getElementById('mobile-menu');
-
-
-
-            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-
-
-
-                mobileMenu.classList.add('hidden');
-
-
-
+            trialModal.classList.remove('hidden');
+            trialModal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; 
+            
+            const trialFeedback = document.getElementById('trial-feedback');
+            if (trialFeedback) {
+                trialFeedback.classList.add('hidden');
+                trialFeedback.innerText = '';
             }
-
-
-
         }
-
-
-
     };
 
 
@@ -3026,6 +2974,70 @@
 
 
 
+
+    
+    // Quiz Step Logic
+    let currentQuizStep = 1;
+
+    window.nextQuizStep = function() {
+        const plan = document.getElementById('modal-plan-input')?.value;
+
+        if (currentQuizStep === 1) {
+            const nome = document.getElementById('quiz-nome')?.value;
+            const email = document.getElementById('quiz-email')?.value;
+            const phone = document.getElementById('quiz-phone')?.value;
+
+            if (!nome || !email || !phone) {
+                alert('Por favor, preencha todos os campos de contato.');
+                return;
+            }
+            currentQuizStep = 2;
+        } else if (currentQuizStep === 2) {
+            currentQuizStep = 3;
+        }
+        updateQuizUI();
+    };
+
+    window.prevQuizStep = function() {
+        if (currentQuizStep > 1) {
+            currentQuizStep--;
+            updateQuizUI();
+        }
+    };
+
+    window.updateQuizUI = function() {
+        const steps = [
+            document.getElementById('step-1'),
+            document.getElementById('step-2'),
+            document.getElementById('step-3')
+        ];
+        const progress = document.getElementById('quiz-progress');
+        const extraQuestion = document.getElementById('extra-question-container');
+        const plan = document.getElementById('modal-plan-input')?.value;
+
+        steps.forEach((step, index) => {
+            if (step) {
+                if (index + 1 === currentQuizStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            }
+        });
+
+        if (progress) {
+            const width = (currentQuizStep / 3) * 100;
+            progress.style.width = `${width}%`;
+        }
+
+        if (currentQuizStep === 3) {
+            if (plan === 'RondaTrack 2' || plan === 'RondaTrack 3 Pro') {
+                extraQuestion?.classList.remove('hidden');
+            } else {
+                extraQuestion?.classList.add('hidden');
+            }
+        }
+    };
 
     // Trial Form Submission
 
@@ -3092,29 +3104,16 @@
 
 
             const data = {
-
-
-
                 nome: formData.get('nome'),
-
-
-
                 email: formData.get('email'),
-
-
-
                 whatsapp: formData.get('phone'),
-
-
-
                 plano_interesse: formData.get('plano_interesse'),
-
-
-
+                nome_empresa: formData.get('nome_empresa'),
+                tempo_empresa: formData.get('tempo_empresa'),
+                qtd_funcionarios: formData.get('qtd_funcionarios'),
+                qtd_postos: formData.get('qtd_postos') || 'N/A',
+                mensagem: formData.get('mensagem') || '',
                 trial_expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-
-
-
             };
 
 
@@ -3465,6 +3464,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 window.scrollTo({ top: targetTop, behavior: 'smooth' });
 
+                if (targetId === 'inicio') {
+                    // Force replay of AOS animations in the hero section
+                    var heroElements = document.querySelectorAll('#inicio [data-aos]');
+                    heroElements.forEach(function(el) {
+                        // Remove the class completely
+                        el.classList.remove('aos-animate');
+                        el.style.opacity = '0'; // force hidden state for a moment
+                    });
+
+                    // Force browser reflow to apply the removal
+                    void document.body.offsetHeight;
+
+                    setTimeout(function() {
+                        heroElements.forEach(function(el) {
+                            el.style.opacity = '';
+                            el.classList.add('aos-animate');
+                        });
+                    }, 400); // Wait enough time for smooth scroll to mostly finish
+                }
+
             }
 
         });
@@ -3475,6 +3494,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: false,
+        mirror: true,
+        offset: 50,
+    });
+</script>
 </body>
 
 
