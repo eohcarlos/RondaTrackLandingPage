@@ -2993,6 +2993,14 @@
             }
             currentQuizStep = 2;
         } else if (currentQuizStep === 2) {
+            const nome_empresa = document.querySelector('input[name="nome_empresa"]')?.value;
+            const tempo_empresa = document.querySelector('select[name="tempo_empresa"]')?.value;
+            const qtd_funcionarios = document.querySelector('select[name="qtd_funcionarios"]')?.value;
+            
+            if (!nome_empresa || !tempo_empresa || !qtd_funcionarios) {
+                alert('Por favor, preencha todos os dados corporativos.');
+                return;
+            }
             currentQuizStep = 3;
         }
         updateQuizUI();
@@ -3183,37 +3191,22 @@
 
 
             } catch (error) {
-
-
-
                 console.error('Error:', error);
+                
+                let errorMsg = 'Erro ao ativar. Tente novamente.';
+                if (error && error.message) {
+                    errorMsg = 'Erro: ' + error.message;
+                }
+                if (error && error.details) {
+                    errorMsg += ' | ' + error.details;
+                }
 
-
-
-                trialFeedback.innerText = 'Erro ao ativar. Tente novamente.';
-
-
-
+                trialFeedback.innerText = errorMsg;
                 trialFeedback.className = 'text-sm text-center text-red-500 mt-3 block';
-
-
-
             } finally {
-
-
-
                 trialSubmitBtn.disabled = false;
-
-
-
                 trialSubmitBtn.style.opacity = '1';
-
-
-
                 btnSpan.innerText = originalText;
-
-
-
             }
 
 
