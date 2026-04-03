@@ -3291,29 +3291,15 @@
 
 
             const data = {
-
-
-
                 nome: formData.get('full_name'),
-
-
-
                 email: formData.get('email'),
-
-
-
                 whatsapp: formData.get('phone'),
-
-
-
-                message: formData.get('message'),
-
-
-
-                plano_interesse: 'Final CTA'
-
-
-
+                mensagem: formData.get('message') || '',
+                plano_interesse: 'Final CTA',
+                nome_empresa: 'N/A',
+                tempo_empresa: 'N/A',
+                qtd_funcionarios: 'N/A',
+                qtd_postos: 'N/A'
             };
 
 
@@ -3367,21 +3353,21 @@
 
 
             } catch (error) {
-
-
-
                 console.error('Error:', error);
+                
+                let errorMsg = 'Erro ao enviar. Tente novamente.';
+                if (error && error.message) {
+                    if (error.message.includes('leads_email_key') || error.message.includes('duplicate key')) {
+                        errorMsg = 'Aviso: Este e-mail já está em nossa fila de contato!';
+                    } else {
+                        errorMsg = 'Erro: ' + error.message;
+                    }
+                } else if (error && error.details) {
+                    errorMsg += ' | ' + error.details;
+                }
 
-
-
-                feedback.innerText = 'Erro ao enviar. Tente novamente.';
-
-
-
+                feedback.innerText = errorMsg;
                 feedback.className = 'text-sm text-center text-red-500 mt-4 block';
-
-
-
             } finally {
 
 
