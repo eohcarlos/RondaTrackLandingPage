@@ -459,13 +459,14 @@
     #inicio { background-position: 60% center !important; }
   }
 </style>
-<section class="relative pt-40 pb-32 overflow-hidden bg-cover bg-no-repeat" style="background-image: url('hero-bg.png'); background-position: center center;" id="inicio">
+<section class="relative pt-40 pb-32 overflow-hidden bg-cover bg-no-repeat" style="background-color: #0a0f1e;" id="inicio">
+    <video id="hero-video" src="Security.mp4" playsinline muted preload="auto" class="absolute inset-0 w-full h-full object-cover z-0"></video>
     <!-- Overlay leve: escurece apenas o suficiente para texto legível, SEM blur na imagem -->
-    <div class="absolute inset-0 z-0" style="background: linear-gradient(to bottom, rgba(10,15,30,0.55) 0%, rgba(10,15,30,0.45) 50%, rgba(10,15,30,0.95) 100%);"></div>
+    <div class="absolute inset-0 z-10" style="background: linear-gradient(to bottom, rgba(10,15,30,0.55) 0%, rgba(10,15,30,0.45) 50%, rgba(10,15,30,0.95) 100%);"></div>
 
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-primary/15 blur-[120px] rounded-full z-0"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-primary/15 blur-[120px] rounded-full z-10"></div>
 
-    <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
+    <div class="max-w-5xl mx-auto px-6 relative z-20 flex flex-col items-center text-center">
 
 
 
@@ -535,12 +536,6 @@
 
 
 
-<!-- GSAP Video ScrollTrigger Container -->
-<div data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="600" class="relative w-full max-w-5xl mx-auto mt-8">
-    <div class="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(36,99,235,0.3)] bg-black/50 backdrop-blur-sm">
-        <video id="hero-video" src="Security.mp4" playsinline muted preload="auto" class="w-full h-full object-cover"></video>
-    </div>
-</div>
 <!-- Ground reflection/glow -->
 
 
@@ -3452,27 +3447,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const video = document.getElementById('hero-video');
         
-        // Ensure video metadata is loaded so we know the duration
-        video.onloadedmetadata = function() {
-            // Pin the hero section and scrub the video
-            ScrollTrigger.create({
-                trigger: "#inicio",
-                start: "top top",
-                end: "+=2000", // The user will scroll 2000px while the section is pinned
-                pin: true,
-                scrub: 0.5, // 0.5 seconds smoothing for a cinematic feel
-                onUpdate: self => {
-                    // Map scroll progress (0 to 1) to video duration
-                    if(video.duration) {
-                        video.currentTime = video.duration * self.progress;
-                    }
+        function initScroll() {
+            let tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#inicio",
+                    start: "top top",
+                    end: "+=3000",
+                    scrub: 0.1,
+                    pin: true,
                 }
             });
-        };
-        
-        // Fallback in case metadata is already loaded (sometimes happens from cache)
+            
+            // Animate video time using GSAP for better performance
+            tl.fromTo(video, { currentTime: 0 }, { currentTime: video.duration || 10, duration: 1, ease: "none" }, 0);
+            
+            // Fade out the texts as the user scrolls
+            tl.to("#inicio .z-20", { opacity: 0, y: -50, duration: 0.3, ease: "power1.inOut" }, 0);
+        }
+
         if(video.readyState >= 1) {
-            video.onloadedmetadata();
+            initScroll();
+        } else {
+            video.onloadedmetadata = initScroll;
         }
     });
 </script>
