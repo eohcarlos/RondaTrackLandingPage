@@ -246,6 +246,20 @@
                             class="w-full bg-slate-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-white placeholder-slate-500 outline-none focus:border-primary transition-all">
                     </div>
                     <div class="flex items-center gap-4">
+                        <select id="status-filter" onchange="applyFilters()" class="bg-slate-900 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-primary text-sm font-medium hidden md:block">
+                            <option value="todos">Qualquer Status</option>
+                            <option value="Novo">Novo</option>
+                            <option value="Em Atendimento">Em Atendimento</option>
+                            <option value="Em Negociação">Em Negociação</option>
+                            <option value="Fechado">Fechado</option>
+                            <option value="Perdido">Perdido</option>
+                        </select>
+                        <select id="date-filter" onchange="applyFilters()" class="bg-slate-900 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-primary text-sm font-medium hidden lg:block">
+                            <option value="todos">Qualquer Data</option>
+                            <option value="hoje">Hoje</option>
+                            <option value="7dias">Últimos 7 Dias</option>
+                            <option value="30dias">Últimos 30 Dias</option>
+                        </select>
                         <select id="plan-filter" onchange="applyFilters()" class="bg-slate-900 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-primary text-sm font-medium">
                             <option value="todos">Todos os Planos</option>
                             <option value="RondaTrack">RondaTrack</option>
@@ -265,7 +279,7 @@
                             <tr class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">
                                 <th class="pl-4 pb-2">Informações do Lead</th>
                                 <th class="pb-2">WhatsApp</th>
-                                <th class="pb-2">Interesse</th>
+                                <th class="pb-2">Status / Plano</th>
                                 <th class="pb-2">Data</th>
                                 <th class="pr-4 pb-2 text-right">Ações</th>
                             </tr>
@@ -449,6 +463,26 @@
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Mensagem</span>
                     <p id="detail-mensagem" class="text-slate-300 italic text-sm leading-relaxed">-</p>
                 </div>
+                
+                <div class="border-t border-white/10 pt-4 mt-2 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status do Lead</label>
+                        <select id="detail-status" class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-primary text-sm">
+                            <option value="Novo">Novo</option>
+                            <option value="Em Atendimento">Em Atendimento</option>
+                            <option value="Em Negociação">Em Negociação</option>
+                            <option value="Fechado">Fechado</option>
+                            <option value="Perdido">Perdido</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Anotações Internas</label>
+                        <textarea id="detail-notas" rows="3" placeholder="Digite observações sobre o atendimento..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-primary text-sm resize-none"></textarea>
+                    </div>
+                    <button onclick="saveLeadDetails()" id="btn-save-details" class="w-full py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-all shadow-lg text-sm flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">save</span> Salvar Alterações
+                    </button>
+                </div>
             </div>
 
             <!-- Botões de ação (fixo no rodapé do modal) -->
@@ -486,12 +520,12 @@
 
         // Mock Data for fallback and demo mode
         const MOCK_LEADS = [
-            { id: '1', nome: 'Ricardo Oliveira', email: 'ricardo@exemplo.com.br', whatsapp: '(11) 98765-4321', plano_interesse: 'RondaTrack 3 Pro', qtd_funcionarios: '101-500', qtd_postos: '15 postos', created_at: new Date().toISOString() },
-            { id: '2', nome: 'Ana Costa', email: 'ana.costa@empresa.pt', whatsapp: '(11) 91234-5678', plano_interesse: 'RondaTrack 2', qtd_funcionarios: '51-100', qtd_postos: '8 postos', created_at: new Date(Date.now() - 86400000).toISOString() },
-            { id: '3', nome: 'Carlos Mendes', email: 'carlos@mendes.com', whatsapp: '(21) 99887-7665', plano_interesse: 'RondaTrack', qtd_funcionarios: '1-10', qtd_postos: 'N/A', created_at: new Date(Date.now() - 172800000).toISOString() },
-            { id: '4', nome: 'Patricia Silva', email: 'patricia@tech.net', whatsapp: '(31) 97766-5544', plano_interesse: 'RondaTrack 3 Pro', qtd_funcionarios: '500+', qtd_postos: '50+ postos', created_at: new Date(Date.now() - 259200000).toISOString() },
-            { id: '5', nome: 'Sérgio Reis', email: 'sergio@condo.br', whatsapp: '(11) 95544-3322', plano_interesse: 'RondaTrack 2', qtd_funcionarios: '11-50', qtd_postos: '4 postos', created_at: new Date(Date.now() - 345600000).toISOString() },
-            { id: '6', nome: 'Leandro Farias', email: 'leandro@seg.com', whatsapp: '(41) 93322-1100', plano_interesse: 'RondaTrack', qtd_funcionarios: '1-10', qtd_postos: 'N/A', created_at: new Date(Date.now() - 432000000).toISOString() }
+            { id: '1', nome: 'Ricardo Oliveira', email: 'ricardo@exemplo.com.br', whatsapp: '(11) 98765-4321', plano_interesse: 'RondaTrack 3 Pro', status: 'Novo', notas: '', qtd_funcionarios: '101-500', qtd_postos: '15 postos', created_at: new Date().toISOString() },
+            { id: '2', nome: 'Ana Costa', email: 'ana.costa@empresa.pt', whatsapp: '(11) 91234-5678', plano_interesse: 'RondaTrack 2', status: 'Em Atendimento', notas: 'Cliente muito interessado.', qtd_funcionarios: '51-100', qtd_postos: '8 postos', created_at: new Date(Date.now() - 86400000).toISOString() },
+            { id: '3', nome: 'Carlos Mendes', email: 'carlos@mendes.com', whatsapp: '(21) 99887-7665', plano_interesse: 'RondaTrack', status: 'Fechado', notas: 'Contrato assinado.', qtd_funcionarios: '1-10', qtd_postos: 'N/A', created_at: new Date(Date.now() - 172800000).toISOString() },
+            { id: '4', nome: 'Patricia Silva', email: 'patricia@tech.net', whatsapp: '(31) 97766-5544', plano_interesse: 'RondaTrack 3 Pro', status: 'Novo', notas: '', qtd_funcionarios: '500+', qtd_postos: '50+ postos', created_at: new Date(Date.now() - 259200000).toISOString() },
+            { id: '5', nome: 'Sérgio Reis', email: 'sergio@condo.br', whatsapp: '(11) 95544-3322', plano_interesse: 'RondaTrack 2', status: 'Em Atendimento', notas: 'Cliente muito interessado.', qtd_funcionarios: '11-50', qtd_postos: '4 postos', created_at: new Date(Date.now() - 345600000).toISOString() },
+            { id: '6', nome: 'Leandro Farias', email: 'leandro@seg.com', whatsapp: '(41) 93322-1100', plano_interesse: 'RondaTrack', status: 'Fechado', notas: 'Contrato assinado.', qtd_funcionarios: '1-10', qtd_postos: 'N/A', created_at: new Date(Date.now() - 432000000).toISOString() }
         ];
 
         let useMockData = false;
@@ -859,9 +893,14 @@
                             </a>
                         </td>
                         <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5">
-                            <span class="px-2.5 py-1 border rounded-lg text-[10px] font-black uppercase tracking-tighter ${planClass}">
-                                ${lead.plano_interesse || 'GERAL'}
-                            </span>
+                            <div class="flex flex-col gap-1 items-start">
+                                <span class="px-2.5 py-1 border rounded-lg text-[10px] font-black uppercase tracking-tighter ${lead.status === 'Novo' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : lead.status === 'Fechado' ? 'bg-green-500/10 text-green-400 border-green-500/20' : lead.status === 'Perdido' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-purple-500/10 text-purple-400 border-purple-500/20'}">
+                                    ${lead.status || 'Novo'}
+                                </span>
+                                <span class="text-[10px] text-slate-500 truncate max-w-[120px] font-medium" title="${lead.plano_interesse || 'Geral'}">
+                                    ${lead.plano_interesse || 'Geral'}
+                                </span>
+                            </div>
                         </td>
                         <td class="bg-white/[0.02] group-hover:bg-white/[0.05] transition-all px-4 py-5">
                             <p class="text-xs text-slate-400 max-w-[150px] truncate" title="${lead.mensagem || ''}">
@@ -895,6 +934,23 @@
 
             if (plan !== 'todos') {
                 filtered = filtered.filter(l => l.plano_interesse === plan);
+            }
+            
+            const statusF = document.getElementById('status-filter')?.value || 'todos';
+            if (statusF !== 'todos') {
+                filtered = filtered.filter(l => (l.status || 'Novo') === statusF);
+            }
+
+            const dateF = document.getElementById('date-filter')?.value || 'todos';
+            if (dateF !== 'todos') {
+                const now = new Date();
+                filtered = filtered.filter(l => {
+                    const lDate = new Date(l.created_at);
+                    if (dateF === 'hoje') return lDate.toDateString() === now.toDateString();
+                    if (dateF === '7dias') return (now - lDate) <= 7 * 24 * 60 * 60 * 1000;
+                    if (dateF === '30dias') return (now - lDate) <= 30 * 24 * 60 * 60 * 1000;
+                    return true;
+                });
             }
 
             if (query) {
@@ -986,7 +1042,51 @@
             document.getElementById('detail-wa-link').href = `https://wa.me/55${lead.whatsapp?.replace(/\D/g, '')}`;
 
             document.getElementById('detail-modal').classList.remove('hidden');
+            document.getElementById('detail-status').value = lead.status || 'Novo';
+            document.getElementById('detail-notas').value = lead.notas || '';
+            document.getElementById('detail-modal').setAttribute('data-current-lead', lead.id);
+
             document.getElementById('detail-modal').classList.add('flex');
+        }
+        
+        async function saveLeadDetails() {
+            const id = document.getElementById('detail-modal').getAttribute('data-current-lead');
+            if (!id) return;
+            
+            const btn = document.getElementById('btn-save-details');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Salvando...';
+            btn.disabled = true;
+
+            const novoStatus = document.getElementById('detail-status').value;
+            const novasNotas = document.getElementById('detail-notas').value;
+
+            try {
+                if (!useMockData) {
+                    const { error } = await supabaseClient
+                        .from('leads')
+                        .update({ status: novoStatus, notas: novasNotas })
+                        .eq('id', id);
+                    if (error) throw error;
+                }
+                
+                // Update local array
+                const leadIndex = allLeads.findIndex(l => l.id == id);
+                if (leadIndex > -1) {
+                    allLeads[leadIndex].status = novoStatus;
+                    allLeads[leadIndex].notas = novasNotas;
+                }
+
+                showToast('Alterações salvas com sucesso!', 'success');
+                applyFilters(); // Refresh table
+                closeDetailModal();
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showToast('Erro ao salvar: ' + error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         function closeDetailModal() {
