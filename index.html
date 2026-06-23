@@ -312,6 +312,8 @@
 
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 
@@ -533,70 +535,12 @@
 
 
 
-<!-- 3D Animated Element Replacement -->
-
-
-
-<div data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="600" class="relative w-full max-w-lg mx-auto perspective-1000">
-
-
-
-<div class="floating">
-
-
-
-<div class="animate-3d-shield relative flex items-center justify-center">
-
-
-
-<!-- Layered 3D-like Shield Structure -->
-
-
-
-<div data-aos="fade-up" data-aos-delay="0" class="w-64 h-64 md:w-80 md:h-80 rounded-[2rem] bg-gradient-to-br from-primary via-primary/50 to-transparent p-[2px] neon-border opacity-90 relative overflow-hidden glass-card">
-
-
-
-<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent animate-pulse"></div>
-
-
-
-<div class="w-full h-full rounded-[2rem] bg-background-dark/80 backdrop-blur-3xl flex items-center justify-center">
-
-
-
-<span class="material-symbols-outlined text-primary text-8xl md:text-9xl drop-shadow-[0_0_15px_rgba(36,99,235,0.8)]">shield_lock</span>
-
-
-
+<!-- GSAP Video ScrollTrigger Container -->
+<div data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="600" class="relative w-full max-w-5xl mx-auto mt-8">
+    <div class="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(36,99,235,0.3)] bg-black/50 backdrop-blur-sm">
+        <video id="hero-video" src="Security.mp4" playsinline muted preload="auto" class="w-full h-full object-cover"></video>
+    </div>
 </div>
-
-
-
-</div>
-
-
-
-<!-- Orbital Rings -->
-
-
-
-<div class="absolute inset-0 -m-8 border-2 border-primary/20 rounded-full animate-[spin_10s_linear_infinite] border-dashed"></div>
-
-
-
-<div class="absolute inset-0 -m-16 border border-white/5 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
 <!-- Ground reflection/glow -->
 
 
@@ -3499,6 +3443,37 @@ document.addEventListener('DOMContentLoaded', function() {
         once: false,
         mirror: true,
         offset: 50,
+    });
+</script>
+<!-- GSAP ScrollTrigger Video Scrubbing -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const video = document.getElementById('hero-video');
+        
+        // Ensure video metadata is loaded so we know the duration
+        video.onloadedmetadata = function() {
+            // Pin the hero section and scrub the video
+            ScrollTrigger.create({
+                trigger: "#inicio",
+                start: "top top",
+                end: "+=2000", // The user will scroll 2000px while the section is pinned
+                pin: true,
+                scrub: 0.5, // 0.5 seconds smoothing for a cinematic feel
+                onUpdate: self => {
+                    // Map scroll progress (0 to 1) to video duration
+                    if(video.duration) {
+                        video.currentTime = video.duration * self.progress;
+                    }
+                }
+            });
+        };
+        
+        // Fallback in case metadata is already loaded (sometimes happens from cache)
+        if(video.readyState >= 1) {
+            video.onloadedmetadata();
+        }
     });
 </script>
 </body>
