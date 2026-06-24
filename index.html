@@ -594,7 +594,7 @@
 
   <!-- Layer 3: Security Guard Video (Left) -->
   <div class="hero-layer" id="layer-guard">
-    <video id="hero-video" src="Security.mp4" autoplay loop muted playsinline preload="auto"></video>
+    <video id="hero-video" src="Security.mp4" muted playsinline preload="auto"></video>
   </div>
 
   <!-- Global Overlay -->
@@ -3525,11 +3525,12 @@ document.addEventListener('DOMContentLoaded', function() {
 (function () {
   'use strict';
 
-  // ── GSAP ScrollTrigger Parallax ────────────────────────────────────────────
+  // ── GSAP ScrollTrigger Parallax + Scroll-driven Video ────────────────────
   function initParallax() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
     gsap.registerPlugin(ScrollTrigger);
 
+    // --- Parallax layers ---
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: '#hero-trigger',
@@ -3540,18 +3541,43 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    // Background grid — slowest (creates depth illusion)
     tl.to('#layer-bg',          { y: '-12%', ease: 'none' }, 0);
-    // Atmospheric haze — slow
-    tl.to('#layer-atm',         { y: '-22%', ease: 'none' }, 0);
-    // Guard — medium (main subject, more movement than bg)
-    tl.to('#layer-guard',       { y: '-34%', ease: 'none' }, 0);
-    // Text drifts + fades as user scrolls away
-    tl.to('#hero-text',         { y: '-18%', opacity: 0.1, ease: 'none' }, 0);
-    // Foreground particles — fastest (closest layer)
-    tl.to('#layer-fg',          { y: '-58%', ease: 'none' }, 0);
-    // Scroll hint disappears immediately
+    tl.to('#layer-atm',         { y: '-18%', ease: 'none' }, 0);
+    tl.to('#layer-guard',       { y: '-28%', ease: 'none' }, 0);
+    tl.to('#hero-text',         { y: '-16%', opacity: 0.08, ease: 'none' }, 0);
+    tl.to('#layer-fg',          { y: '-52%', ease: 'none' }, 0);
     tl.to('.hero-scroll-hint',  { opacity: 0, ease: 'none', duration: 0.2 }, 0);
+
+    // --- Scroll-driven video: guarda "caminha" conforme o scroll ---
+    var video = document.getElementById('hero-video');
+    if (!video) return;
+
+    function setupVideoScrub() {
+      if (!video.duration) return;
+
+      // Tween an object whose value GSAP updates each frame
+      var proxy = { t: 0 };
+      gsap.to(proxy, {
+        t: video.duration,
+        ease: 'none',
+        onUpdate: function () {
+          video.currentTime = proxy.t;
+        },
+        scrollTrigger: {
+          trigger: '#hero-trigger',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,          // leve atraso para suavidade
+          invalidateOnRefresh: true,
+        }
+      });
+    }
+
+    if (video.readyState >= 1) {
+      setupVideoScrub();
+    } else {
+      video.addEventListener('loadedmetadata', setupVideoScrub, { once: true });
+    }
   }
 
   // ── Canvas Particle System ─────────────────────────────────────────────────
