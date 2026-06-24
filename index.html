@@ -453,25 +453,32 @@
 
 <!-- Section 1: Hero -->
 <style>
-  #hero-trigger { position: relative; height: 320vh; }
+  /* ── Hero Trigger (scroll room for parallax) ── */
+  #hero-trigger { position: relative; height: 200vh; }
+
+  /* ── Sticky section (fills viewport while scrolling trigger) ── */
   #inicio {
     position: sticky;
     top: 0;
+    width: 100%;
     height: 100svh;
     overflow: hidden;
     background: #08080f;
   }
+
+  /* ── Base for all parallax layers ── */
   .hero-layer {
     position: absolute;
     inset: 0;
     will-change: transform;
   }
-  /* Layer 1 — deep background + grid */
+
+  /* Layer 1 — deep background + subtle grid */
   #layer-bg {
     z-index: 1;
     background:
-      radial-gradient(ellipse 90% 70% at 25% 55%, rgba(99,102,241,0.15) 0%, transparent 55%),
-      radial-gradient(ellipse 60% 50% at 72% 20%, rgba(59,130,246,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse 90% 70% at 25% 55%, rgba(99,102,241,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 72% 22%, rgba(59,130,246,0.07) 0%, transparent 50%),
       #08080f;
   }
   #layer-bg::before {
@@ -479,69 +486,82 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(99,102,241,0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(99,102,241,0.07) 1px, transparent 1px);
+      linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
     background-size: 68px 68px;
-    -webkit-mask-image: radial-gradient(ellipse 62% 78% at 28% 52%, black 20%, transparent 72%);
-    mask-image: radial-gradient(ellipse 62% 78% at 28% 52%, black 20%, transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 76% at 28% 52%, black 20%, transparent 72%);
+    mask-image: radial-gradient(ellipse 60% 76% at 28% 52%, black 20%, transparent 72%);
   }
-  /* Layer 2 — atmospheric haze */
+
+  /* Layer 2 — atmospheric haze (slow) */
   #layer-atm {
     z-index: 2;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 44% 54% at 17% 88%, rgba(99,102,241,0.11) 0%, transparent 60%),
-      radial-gradient(ellipse 28% 33% at 10% 12%, rgba(59,130,246,0.07) 0%, transparent 55%);
+      radial-gradient(ellipse 44% 54% at 17% 90%, rgba(99,102,241,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 28% 33% at 10% 10%, rgba(59,130,246,0.06) 0%, transparent 55%);
   }
-  /* Layer 3 — guard video (left side, starts below navbar) */
+
+  /* Layer 3 — guard video (full section, left 62%) */
   #layer-guard {
-    position: absolute;
-    top: 74px;
-    left: 0;
-    right: 38%;
-    bottom: 0;
     z-index: 3;
+    right: 38%;
     overflow: hidden;
-    will-change: transform;
   }
   #hero-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 30% 8%;
+    object-position: 30% 0%;   /* show guard from very top of frame */
   }
+  /* Fade guard right edge + bottom */
   #layer-guard::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(to right, transparent 44%, #08080f 87%),
-      linear-gradient(to top, #08080f 0%, transparent 18%);
+      linear-gradient(to right, transparent 50%, #08080f 92%),
+      linear-gradient(to top, #08080f 0%, transparent 14%);
   }
-  /* Global overlay — top gradient starts after navbar */
+
+  /* Global overlay:
+     - Solid dark band top 0→74px  →  hides video behind navbar, guard head appears at navbar bottom
+     - Transparent middle           →  guard and text fully visible
+     - Dark fade bottom             →  smooth transition to next section
+     - Subtle right darkening       →  text area readability
+  */
   #hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 4;
     pointer-events: none;
     background:
-      linear-gradient(to bottom, transparent 0%, transparent 80%, rgba(8,8,15,0.98) 100%),
-      linear-gradient(to right, transparent 46%, rgba(8,8,15,0.18) 65%);
+      linear-gradient(to bottom,
+        #08080f 0px,
+        #08080f 74px,
+        rgba(8,8,15,0.0) 108px,
+        rgba(8,8,15,0.0) 80%,
+        rgba(8,8,15,0.98) 100%
+      ),
+      linear-gradient(to right, transparent 44%, rgba(8,8,15,0.22) 68%);
   }
-  /* Text — right side, abaixo do navbar */
+
+  /* Text — right side, padded below navbar, vertically centered */
   #hero-text {
     position: absolute;
     right: 0;
-    top: 74px;
+    top: 0;
     bottom: 0;
-    width: 48%;
+    width: 46%;
     z-index: 10;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 1.5rem 5% 1.5rem 2%;
+    /* 90px = navbar (74px) + breathing room */
+    padding: 90px 5% 2rem 2%;
   }
+
   /* Layer 5 — foreground particles */
   #layer-fg {
     z-index: 5;
@@ -552,6 +572,7 @@
     height: 100%;
     display: block;
   }
+
   /* Scroll hint */
   .hero-scroll-hint {
     position: absolute;
@@ -563,7 +584,7 @@
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    opacity: 0.42;
+    opacity: 0.4;
     animation: heroScrollBounce 2.2s ease-in-out infinite;
     pointer-events: none;
   }
@@ -571,24 +592,26 @@
     0%, 100% { transform: translateX(-50%) translateY(0); }
     50%       { transform: translateX(-50%) translateY(7px); }
   }
+
   @media (max-width: 768px) {
-    #hero-trigger { height: 220vh; }
-    #layer-guard { top: 64px; right: 0; }
+    #hero-trigger { height: 180vh; }
+    #layer-guard { right: 0; }
     #layer-guard::after {
-      background: linear-gradient(to bottom, transparent 35%, #08080f 80%);
+      background:
+        linear-gradient(to bottom, transparent 38%, #08080f 82%),
+        linear-gradient(to right, transparent 60%, rgba(8,8,15,0.6) 100%);
     }
     #hero-text {
-      top: 64px;
       width: 100%;
-      padding: 1rem 6% 0;
+      padding: 90px 6% 2rem;
       justify-content: flex-end;
-      padding-bottom: 10%;
+      padding-bottom: 12%;
     }
   }
 </style>
 
 <div id="hero-trigger">
-<section id="inicio" class="pt-20">
+<section id="inicio">
 
   <!-- Layer 1: Deep Background + Grid -->
   <div class="hero-layer" id="layer-bg"></div>
@@ -596,12 +619,12 @@
   <!-- Layer 2: Atmospheric Haze -->
   <div class="hero-layer" id="layer-atm"></div>
 
-  <!-- Layer 3: Security Guard Video (Left) -->
+  <!-- Layer 3: Security Guard Video (Left, autoplay) -->
   <div class="hero-layer" id="layer-guard">
-    <video id="hero-video" src="Security.mp4" muted playsinline preload="auto"></video>
+    <video id="hero-video" src="Security.mp4" autoplay loop muted playsinline preload="auto"></video>
   </div>
 
-  <!-- Global Overlay -->
+  <!-- Global Overlay (navbar mask + bottom fade) -->
   <div id="hero-overlay"></div>
 
   <!-- Text Content (Right Side) -->
@@ -632,7 +655,7 @@
     </div>
   </div>
 
-  <!-- Layer 5: Foreground Particles Canvas -->
+  <!-- Layer 5: Foreground Particles -->
   <div class="hero-layer" id="layer-fg">
     <canvas id="hero-particles"></canvas>
   </div>
@@ -3529,59 +3552,27 @@ document.addEventListener('DOMContentLoaded', function() {
 (function () {
   'use strict';
 
-  // ── GSAP ScrollTrigger Parallax + Scroll-driven Video ────────────────────
+  // ── GSAP ScrollTrigger Parallax ──────────────────────────────────────────
   function initParallax() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
     gsap.registerPlugin(ScrollTrigger);
 
-    // --- Parallax layers ---
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: '#hero-trigger',
         start: 'top top',
         end: 'bottom top',
-        scrub: 1.8,
+        scrub: 2,
         invalidateOnRefresh: true,
       }
     });
 
-    tl.to('#layer-bg',          { y: '-12%', ease: 'none' }, 0);
-    tl.to('#layer-atm',         { y: '-18%', ease: 'none' }, 0);
-    tl.to('#layer-guard',       { y: '-28%', ease: 'none' }, 0);
-    tl.to('#hero-text',         { y: '-16%', opacity: 0.08, ease: 'none' }, 0);
-    tl.to('#layer-fg',          { y: '-52%', ease: 'none' }, 0);
-    tl.to('.hero-scroll-hint',  { opacity: 0, ease: 'none', duration: 0.2 }, 0);
-
-    // --- Scroll-driven video: guarda "caminha" conforme o scroll ---
-    var video = document.getElementById('hero-video');
-    if (!video) return;
-
-    function setupVideoScrub() {
-      if (!video.duration) return;
-
-      // Tween an object whose value GSAP updates each frame
-      var proxy = { t: 0 };
-      gsap.to(proxy, {
-        t: video.duration,
-        ease: 'none',
-        onUpdate: function () {
-          video.currentTime = proxy.t;
-        },
-        scrollTrigger: {
-          trigger: '#hero-trigger',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,          // leve atraso para suavidade
-          invalidateOnRefresh: true,
-        }
-      });
-    }
-
-    if (video.readyState >= 1) {
-      setupVideoScrub();
-    } else {
-      video.addEventListener('loadedmetadata', setupVideoScrub, { once: true });
-    }
+    // Background layers move — text stays fixed (never hits navbar)
+    tl.to('#layer-bg',         { y: '-10%', ease: 'none' }, 0);
+    tl.to('#layer-atm',        { y: '-18%', ease: 'none' }, 0);
+    tl.to('#layer-guard',      { y: '-26%', ease: 'none' }, 0);
+    tl.to('#layer-fg',         { y: '-48%', ease: 'none' }, 0);
+    tl.to('.hero-scroll-hint', { opacity: 0, ease: 'none', duration: 0.15 }, 0);
   }
 
   // ── Canvas Particle System ─────────────────────────────────────────────────
