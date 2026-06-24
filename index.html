@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="dark" lang="pt-BR"><head>
+﻿<!DOCTYPE html><html class="dark" lang="pt-BR"><head>
 
 
 
@@ -313,6 +313,8 @@
 
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 
 
@@ -450,108 +452,196 @@
 
 
 <!-- Section 1: Hero -->
-
-
-
 <style>
+  #hero-trigger { position: relative; height: 200vh; }
+  #inicio {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background: #08080f;
+  }
+  .hero-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+  /* Layer 1 — deep background + grid */
+  #layer-bg {
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 90% 70% at 25% 55%, rgba(99,102,241,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 72% 20%, rgba(59,130,246,0.07) 0%, transparent 50%),
+      #08080f;
+  }
+  #layer-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.07) 1px, transparent 1px);
+    background-size: 68px 68px;
+    -webkit-mask-image: radial-gradient(ellipse 62% 78% at 28% 52%, black 20%, transparent 72%);
+    mask-image: radial-gradient(ellipse 62% 78% at 28% 52%, black 20%, transparent 72%);
+  }
+  /* Layer 2 — atmospheric haze */
+  #layer-atm {
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 44% 54% at 17% 88%, rgba(99,102,241,0.11) 0%, transparent 60%),
+      radial-gradient(ellipse 28% 33% at 10% 12%, rgba(59,130,246,0.07) 0%, transparent 55%);
+  }
+  /* Layer 3 — guard video (left side) */
+  #layer-guard {
+    z-index: 3;
+    right: 38%;
+    overflow: hidden;
+  }
+  #hero-video {
+    width: 100%;
+    height: 115%;
+    object-fit: cover;
+    object-position: 25% center;
+    margin-top: -8%;
+  }
+  #layer-guard::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(to right, transparent 44%, #08080f 87%),
+      linear-gradient(to top, #08080f 0%, transparent 16%),
+      linear-gradient(to bottom, rgba(8,8,15,0.52) 0%, transparent 13%);
+  }
+  /* Global overlay */
+  #hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, rgba(8,8,15,0.55) 0%, transparent 14%, transparent 80%, rgba(8,8,15,0.98) 100%),
+      linear-gradient(to right, transparent 46%, rgba(8,8,15,0.18) 65%);
+  }
+  /* Text — right side */
+  #hero-text {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 48%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 5% 0 2%;
+  }
+  /* Layer 5 — foreground particles */
+  #layer-fg {
+    z-index: 5;
+    pointer-events: none;
+  }
+  #hero-particles {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* Scroll hint */
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.42;
+    animation: heroScrollBounce 2.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes heroScrollBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(7px); }
+  }
   @media (max-width: 768px) {
-    #inicio { background-position: 60% center !important; }
+    #hero-trigger { height: 150vh; }
+    #layer-guard { right: 0; }
+    #layer-guard::after {
+      background: linear-gradient(to bottom, transparent 32%, #08080f 78%);
+    }
+    #hero-text {
+      width: 100%;
+      padding: 80px 6% 0;
+      justify-content: flex-end;
+      padding-bottom: 11%;
+    }
   }
 </style>
-<section class="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-background-dark pt-20" id="inicio">
-    <video id="hero-video" src="Security.mp4" autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full z-0" style="object-fit: cover; object-position: 25% 30%;"></video>
-    <!-- Overlay leve: escurece apenas o suficiente para texto legível, SEM blur na imagem -->
-    <div class="absolute inset-0 z-10" style="background: linear-gradient(to bottom, rgba(10,15,30,0.55) 0%, rgba(10,15,30,0.45) 50%, rgba(10,15,30,0.95) 100%);"></div>
 
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-primary/15 blur-[120px] rounded-full z-10"></div>
+<div id="hero-trigger">
+<section id="inicio" class="pt-20">
 
-    <div class="max-w-5xl mx-auto px-6 relative z-20 flex flex-col items-center text-center">
+  <!-- Layer 1: Deep Background + Grid -->
+  <div class="hero-layer" id="layer-bg"></div>
 
+  <!-- Layer 2: Atmospheric Haze -->
+  <div class="hero-layer" id="layer-atm"></div>
 
+  <!-- Layer 3: Security Guard Video (Left) -->
+  <div class="hero-layer" id="layer-guard">
+    <video id="hero-video" src="Security.mp4" autoplay loop muted playsinline preload="auto"></video>
+  </div>
 
-<div data-aos="fade-down" data-aos-duration="1000" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border font-bold tracking-widest uppercase mb-8 text-sm shadow-lg" style="background: rgba(36,99,235,0.18); border-color: rgba(36,99,235,0.6); color: #fff; box-shadow: 0 0 18px rgba(36,99,235,0.45), 0 2px 8px rgba(0,0,0,0.4);">
-  <span class="relative flex h-2.5 w-2.5">
-    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-80"></span>
-    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-  </span>
-  Lançamento 2026
-</div>
+  <!-- Global Overlay -->
+  <div id="hero-overlay"></div>
 
+  <!-- Text Content (Right Side) -->
+  <div id="hero-text">
+    <div data-aos="fade-left" data-aos-duration="900" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border font-bold tracking-widest uppercase mb-8 text-sm shadow-lg w-fit" style="background: rgba(36,99,235,0.18); border-color: rgba(36,99,235,0.6); color: #fff; box-shadow: 0 0 18px rgba(36,99,235,0.45), 0 2px 8px rgba(0,0,0,0.4);">
+      <span class="relative flex h-2.5 w-2.5">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-80"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+      </span>
+      Lançamento 2026
+    </div>
 
+    <h1 data-aos="fade-left" data-aos-duration="900" data-aos-delay="100" class="text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.05] tracking-tight text-white mb-6">
+      RondaTrack — <span class="text-primary">Controle Total</span> da Segurança Operacional
+    </h1>
 
-<h1 data-aos="fade-up" data-aos-duration="1000" class="text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight text-white mb-6">
+    <p data-aos="fade-left" data-aos-duration="900" data-aos-delay="200" class="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed mb-10">
+      Gerencie rondas, folgas (FT), equipes e operações de segurança em um único sistema inteligente de alta performance.
+    </p>
 
+    <div data-aos="fade-left" data-aos-duration="900" data-aos-delay="350" class="flex flex-col sm:flex-row gap-4">
+      <button onclick="openTrialModal('Hero')" class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:scale-105 transition-all neon-glow flex items-center justify-center gap-2 border-none focus:outline-none">
+        Iniciar Teste Grátis <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      </button>
+      <a href="http://wa.me/5511941628487" target="_blank" class="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+        Falar no WhatsApp
+      </a>
+    </div>
+  </div>
 
+  <!-- Layer 5: Foreground Particles Canvas -->
+  <div class="hero-layer" id="layer-fg">
+    <canvas id="hero-particles"></canvas>
+  </div>
 
-            RondaTrack — <span class="text-primary">Controle Total</span> da Segurança Operacional
-
-
-
-        </h1>
-
-
-
-<p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200" class="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed mb-10">
-
-
-
-            Gerencie rondas, folgas (FT), equipes e operações de segurança em um único sistema inteligente de alta performance.
-
-
-
-        </p>
-
-
-
-<div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400" class="flex flex-col sm:flex-row gap-4 justify-center mb-20 w-full">
-
-
-
-            <button onclick="openTrialModal('Hero')" class="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:scale-105 transition-all neon-glow flex items-center justify-center gap-2 border-none focus:outline-none">
-
-
-
-                Iniciar Teste Grátis <span class="material-symbols-outlined text-lg">arrow_forward</span>
-
-
-
-            </button>
-
-
-
-            <a href="http://wa.me/5511941628487" target="_blank" class="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
-
-
-
-                Falar no WhatsApp
-
-
-
-            </a>
-
-
-
-</div>
-
-
-
-<!-- Ground reflection/glow -->
-
-
-
-<div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[300px] h-[40px] bg-primary/40 blur-[40px] rounded-full scale-y-50"></div>
-
-
-
-</div>
-
-
-
-</div>
-
-
+  <!-- Scroll Hint -->
+  <div class="hero-scroll-hint">
+    <span class="text-white/40 text-xs tracking-widest uppercase font-medium">Scroll</span>
+    <span class="material-symbols-outlined text-white/40 text-base">keyboard_arrow_down</span>
+  </div>
 
 </section>
+</div>
+
 
 
 
@@ -3428,6 +3518,138 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+</script>
+
+<!-- Hero Parallax ScrollTrigger + Particles -->
+<script>
+(function () {
+  'use strict';
+
+  // ── GSAP ScrollTrigger Parallax ────────────────────────────────────────────
+  function initParallax() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hero-trigger',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.8,
+        invalidateOnRefresh: true,
+      }
+    });
+
+    // Background grid — slowest (creates depth illusion)
+    tl.to('#layer-bg',          { y: '-12%', ease: 'none' }, 0);
+    // Atmospheric haze — slow
+    tl.to('#layer-atm',         { y: '-22%', ease: 'none' }, 0);
+    // Guard — medium (main subject, more movement than bg)
+    tl.to('#layer-guard',       { y: '-34%', ease: 'none' }, 0);
+    // Text drifts + fades as user scrolls away
+    tl.to('#hero-text',         { y: '-18%', opacity: 0.1, ease: 'none' }, 0);
+    // Foreground particles — fastest (closest layer)
+    tl.to('#layer-fg',          { y: '-58%', ease: 'none' }, 0);
+    // Scroll hint disappears immediately
+    tl.to('.hero-scroll-hint',  { opacity: 0, ease: 'none', duration: 0.2 }, 0);
+  }
+
+  // ── Canvas Particle System ─────────────────────────────────────────────────
+  function initParticles() {
+    var canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W, H;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Palette: indigo, blue, violet, white-ish sparkle
+    var PALETTE = [[99,102,241],[59,130,246],[139,92,246],[200,210,255]];
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function mkP(scatter) {
+      var c = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+      var big = Math.random() < 0.14;
+      return {
+        x: rnd(0, W),
+        y: scatter ? rnd(0, H) : H + rnd(10, 60),
+        r:     big ? rnd(2, 3.5)  : rnd(0.4, 1.8),
+        glowR: big ? rnd(22, 38)  : rnd(6, 16),
+        speed: rnd(0.12, 0.52),
+        opacity: rnd(0.14, 0.58),
+        drift: rnd(-0.09, 0.09),
+        color: c,
+      };
+    }
+
+    var particles = [];
+    for (var i = 0; i < 72; i++) particles.push(mkP(true));
+
+    // Horizontal light streaks (left half — foreground of guard)
+    var streaks = [];
+    for (var j = 0; j < 11; j++) {
+      var c2 = PALETTE[Math.floor(Math.random() * 3)];
+      streaks.push({
+        x: rnd(0, W * 0.62),
+        y: rnd(0, H),
+        w: rnd(45, 120),
+        h: rnd(0.3, 1.3),
+        opacity: rnd(0.03, 0.12),
+        speed: rnd(0.05, 0.18),
+        color: c2,
+      });
+    }
+
+    function drawP(p) {
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.glowR);
+      g.addColorStop(0, 'rgba(' + p.color + ',' + (p.opacity * 0.9) + ')');
+      g.addColorStop(1, 'rgba(' + p.color + ',0)');
+      ctx.beginPath(); ctx.fillStyle = g;
+      ctx.arc(p.x, p.y, p.glowR, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(' + p.color + ',' + Math.min(p.opacity * 2.2, 1) + ')';
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    function drawS(s) {
+      var g = ctx.createLinearGradient(s.x, s.y, s.x + s.w, s.y);
+      g.addColorStop(0,   'rgba(' + s.color + ',0)');
+      g.addColorStop(0.38,'rgba(' + s.color + ',' + s.opacity + ')');
+      g.addColorStop(1,   'rgba(' + s.color + ',0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(s.x, s.y, s.w, s.h);
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(function (p) {
+        drawP(p);
+        p.y -= p.speed; p.x += p.drift;
+        if (p.y < -p.glowR * 2) Object.assign(p, mkP(false));
+      });
+      streaks.forEach(function (s) {
+        drawS(s);
+        s.y -= s.speed * 0.22;
+        s.opacity += (Math.random() - 0.5) * 0.005;
+        s.opacity = Math.max(0.02, Math.min(0.13, s.opacity));
+        if (s.y < -2) { s.y = H + 2; s.x = rnd(0, W * 0.62); }
+      });
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    initParallax();
+    initParticles();
+  });
+})();
 </script>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
